@@ -1,5 +1,6 @@
 package com.devsuperior.dscommerce.entities;
 
+import com.devsuperior.dscommerce.projections.UserDetailsProjection;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,6 +47,12 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<Role>();
+
+    public void addProjection(UserDetailsProjection projection) {
+        this.email = projection.getUsername();
+        this.password = projection.getPassword();
+        this.addRole(new Role(projection));
+    }
 
     public void addRole(Role role) {
         this.roles.add(role);

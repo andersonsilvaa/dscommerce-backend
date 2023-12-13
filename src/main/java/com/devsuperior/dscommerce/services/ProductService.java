@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.devsuperior.dscommerce.dto.ProductDTO;
+import com.devsuperior.dscommerce.dto.ProductDto;
 import com.devsuperior.dscommerce.entities.Product;
 import com.devsuperior.dscommerce.repositories.ProductRepository;
 import com.devsuperior.dscommerce.services.exceptions.DatabaseException;
@@ -23,33 +23,32 @@ public class ProductService {
     private ProductRepository repository;
 
     @Transactional(readOnly = true)
-    public ProductDTO findById(Long id) {
+    public ProductDto findById(Long id) {
         Product product = repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Recurso não encontrado"));
-        return new ProductDTO(product);
+        return new ProductDto(product);
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductDTO> findAll(String name, Pageable pageable) {
+    public Page<ProductDto> findAll(String name, Pageable pageable) {
         Page<Product> result = repository.searchByName(name, pageable);
-        return result.map(x -> new ProductDTO(x));
+        return result.map(x -> new ProductDto(x));
     }
 
     @Transactional
-    public ProductDTO insert(ProductDTO dto) {
-        Product entity = new Product();
-        copyDtoToEntity(dto, entity);
+    public ProductDto insert(ProductDto dto) {
+        Product entity = new Product(dto);
         entity = repository.save(entity);
-        return new ProductDTO(entity);
+        return new ProductDto(entity);
     }
 
     @Transactional
-    public ProductDTO update(Long id, ProductDTO dto) {
+    public ProductDto update(Long id, ProductDto dto) {
         try {
             Product entity = repository.getReferenceById(id);
-            copyDtoToEntity(dto, entity);
+            entity.dtoToEntity(dto);
             entity = repository.save(entity);
-            return new ProductDTO(entity);
+            return new ProductDto(entity);
         }
         catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Recurso não encontrado");
@@ -67,12 +66,5 @@ public class ProductService {
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Falha de integridade referencial");
         }
-    }
-
-    private void copyDtoToEntity(ProductDTO dto, Product entity) {
-        entity.setName(dto.getName());
-        entity.setDescription(dto.getDescription());
-        entity.setPrice(dto.getPrice());
-        entity.setImgUrl(dto.getImgUrl());
     }
 }

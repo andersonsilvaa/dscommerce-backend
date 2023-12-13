@@ -1,11 +1,20 @@
 package com.devsuperior.dscommerce.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"id"})
+@NoArgsConstructor
 @Entity
 @Table(name = "tb_order_item")
 public class OrderItem {
@@ -13,11 +22,11 @@ public class OrderItem {
     @EmbeddedId
     private OrderItemPK id = new OrderItemPK();
 
+    @Column(name = "quantity")
     private Integer quantity;
-    private Double price;
 
-    public OrderItem() {
-    }
+    @Column(name = "price")
+    private Double price;
 
     public OrderItem(Order order, Product product, Integer quantity, Double price) {
         id.setOrder(order);
@@ -40,36 +49,5 @@ public class OrderItem {
 
     public void setProduct(Product product) {
         id.setProduct(product);
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        OrderItem orderItem = (OrderItem) o;
-
-        return Objects.equals(id, orderItem.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
     }
 }

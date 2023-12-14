@@ -3,6 +3,7 @@ package com.devsuperior.dscommerce.entities;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.devsuperior.dscommerce.dto.ProductDto;
 import jakarta.persistence.Column;
@@ -54,11 +55,15 @@ public class Product {
 
     public Product(ProductDto dto) {
         new ModelMapper().map(dto, this);
+        this.categories = dto.getCategories().stream().map(categoryDto ->
+                new Category(categoryDto)).collect(Collectors.toSet());
     }
 
     public void dtoToEntity(ProductDto dto) {
         new ModelMapper().typeMap(ProductDto.class, Product.class)
                 .addMappings(mapper -> mapper.skip(Product::setId))
                 .map(dto, this);
+        this.categories = dto.getCategories().stream().map(categoryDto ->
+                new Category(categoryDto)).collect(Collectors.toSet());
     }
 }

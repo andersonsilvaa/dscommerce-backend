@@ -1,7 +1,9 @@
 package com.devsuperior.dscommerce.entities;
 
+import com.devsuperior.dscommerce.dto.CategoryDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.modelmapper.ModelMapper;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -26,4 +28,8 @@ public class Category {
     @Setter(AccessLevel.NONE)
     @ManyToMany(mappedBy = "categories")
     private Set<Product> products = new HashSet<>();
+
+    public Category(CategoryDto dto) {
+        new ModelMapper().map(dto, this);
+    }
 }

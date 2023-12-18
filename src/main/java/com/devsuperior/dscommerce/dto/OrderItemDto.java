@@ -18,12 +18,14 @@ public class OrderItemDto {
     private String name;
     private Double price;
     private Integer quantity;
+    private String imgUrl;
 
     public OrderItemDto(OrderItem orderItem) {
         this.productId = orderItem.getProduct().getId();
         this.name = orderItem.getProduct().getName();
         this.price = orderItem.getPrice();
         this.quantity = orderItem.getQuantity();
+        this.imgUrl = orderItem.getProduct().getImgUrl();
     }
 
     public Double getSubTotal() {
